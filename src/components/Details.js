@@ -1,6 +1,10 @@
 import styled from "styled-components";
+import { Link } from "react-router-dom";
 
-export default function Details() {
+export default function Details(props) {
+  const place = props.ses.id
+  console.log("teste do props", place)
+  
   return (
     <ClientData>
         <div>
@@ -11,7 +15,7 @@ export default function Details() {
             <h1>CPF do comprador:</h1>
             <input className="ClientCpf" placeholder="Digite seu CPF..."/>
         </div>
-        <Finish>Reservar Assento(s)</Finish>
+        <Link to={`/sucess/${place}`}><Finish>Reservar Assento(s)</Finish></Link>
     </ClientData>
     
   );
