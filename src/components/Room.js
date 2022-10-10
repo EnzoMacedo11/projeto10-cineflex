@@ -3,8 +3,10 @@ import styled from "styled-components";
 import axios from "axios";
 import { Link, useParams } from "react-router-dom";
 import Type from "./Type";
+import { useNavigate } from "react-router-dom";
 
 export default function Room() {
+  const navigate = useNavigate();
   const [place, setPlace] = useState([]);
   const [seat, setSeat] = useState([]);
   const [image, setImage] = useState([]);
@@ -12,10 +14,13 @@ export default function Room() {
   const [name, setName] = useState("");
   const [cpf, setCpf] = useState("");
   const [seatId, SetSeatId] = useState([]);
+  const [seatName, SetSeatName]= useState([]);
   const { roomId } = useParams();
+  const { sucessId } = useParams();
   //console.log("roomId", roomId);
-  console.log("place", place);
+  //console.log("place", place);
   //console.log("seat",seat)
+  //console.log("sucessId",sucessId)
 
   useEffect(() => {
     const url = `https://mock-api.driven.com.br/api/v5/cineflex/showtimes/${roomId}/seats`;
@@ -27,7 +32,7 @@ export default function Room() {
       setSeat(res.data.seats);
       setImage(res.data.movie);
       setDate(res.data.day);
-      console.log("tem isso no seat", seat);
+      //console.log("tem isso no seat", seat);
     });
     promisse.catch((erro) => {
       console.log(erro.response.data);
@@ -42,6 +47,8 @@ export default function Room() {
     "https://mock-api.driven.com.br/api/v5/cineflex/seats/book-many";
 
   function postDate(event) {
+    //console.log("name", name);
+    //console.log("cpf", cpf);
     event.preventDefault();
     const promisse = axios.post(postUrl, {
       ids: seatId,
@@ -49,39 +56,53 @@ export default function Room() {
       cpf: cpf,
     });
     promisse.then((res) => {
-      console.log("teste envio", res.data);
+     // console.log("teste envio", res.data);
+      navigate(`/sucess/${roomId}`, { state:{seatId: seatId, name: name, cpf: cpf, seatName:seatName}});
     });
     promisse.catch((erro) => {
       console.log("teste envio erro", erro.response.data);
     });
   }
 
-  function choiceSeat(id) {
+  function choiceSeat(ses) {
+    const{id, name, isAvailable} = ses
     if (seatId.includes(id)) {
       SetSeatId([...seatId.filter((el) => el !== id)]); //selecionar assento na lista de selecionados
+      
+    }
+    if (seatName.includes(name)) {
+      SetSeatName([...seatName.filter((el) => el !== name)]); //selecionar assento na lista de selecionados
       return;
-    } else if (!"isAvailable"); // assento não disponivel
+    }
+
     SetSeatId([...seatId, id]);
-  }
-  console.log("teste escolha de lugar", seatId);
+    SetSeatName([...seatName, name])
+  } 
+ // console.log("teste escolha de lugar", seatId);
+ // console.log("teste escolha de name", seatName);
+  
 
   return (
+    <>
     <Container>
       <Title>
         <h1>Selecione o(s) assento(s)</h1>
       </Title>
       <Seats>
-        {seat.map((ses) => (
-          <button onClick={() => choiceSeat(ses.id)}>{ses.name}</button>
-        ))}
+        {seat.map((ses) => {
+          return(
+          <SeatButton habilited={ses.isAvailable} selected={seatId.includes(ses.id)} disabled={!ses.isAvailable} onClick={() => choiceSeat(ses)}>{ses.name}</SeatButton>
+        )})}
       </Seats>
       <Type />
       <ClientData>
-        <form onSubmit={postDate}> {/*formulário com nome e cpf que tem que ser enviados ao servidor e tela 4*/ }
+        <form onSubmit={postDate}>
+          {" "}
+          {/*formulário com nome e cpf que tem que ser enviados ao servidor e tela 4*/}
           <div>
             <h1>Nome do comprador:</h1>
             <input
-              onChange={(e) => setName(e.target.value)} //atualiza name para enviar 
+              onChange={(e) => setName(e.target.value)} //atualiza name para enviar
               value={name}
               placeholder="Digite seu nome..."
             />
@@ -89,15 +110,12 @@ export default function Room() {
           <div>
             <h1>CPF do comprador:</h1>
             <input
-              onChange={(e) => setCpf(e.target.value)} //atualiza cpf para enviar 
+              onChange={(e) => setCpf(e.target.value)} //atualiza cpf para enviar
               value={cpf}
               placeholder="Digite seu CPF..."
             />
           </div>
-
-          <Link to={`/sucess/${place.id}`}>
-            <Finish type="submit">Reservar Assento(s)</Finish>
-          </Link>
+          <Finish type="submit">Reservar Assento(s)</Finish>
         </form>
       </ClientData>
       <Footer>
@@ -112,10 +130,13 @@ export default function Room() {
         </text>
       </Footer>
     </Container>
+    </>
   );
 }
 
 const Container = styled.div`
+  height:100%;
+  width:100%;
   display: flex;
   flex-direction: column;
   justify-content: center;
@@ -167,16 +188,19 @@ const Seats = styled.div`
   align-items: center;
   justify-content: center;
 
-  button {
-    width: 26px;
+`;
+const SeatButton = styled.button`
+   width: 26px;
     height: 26px;
     margin-left: 7px;
+    background-color: ${props => props.habilited ? "#C3CFD9" : "#FBE192"};
+    ${props => props.selected ? "background-color: #1AAE9E" : "" };
     margin-bottom: 19px;
-    background: #c3cfd9;
     border: 1px solid #808f9d;
     border-radius: 12px;
-  }
-`;
+
+
+`
 
 const ClientData = styled.div`
   display: flex;
@@ -206,6 +230,12 @@ const ClientData = styled.div`
     background: #ffffff;
     border: 1px solid #d5d5d5;
     border-radius: 3px;
+  }
+  form{
+    display:flex;
+    flex-direction:column;
+    justify-content:center;
+    align-items:center;
   }
 `;
 
@@ -262,10 +292,9 @@ const Footer = styled.div`
     font-size: 26px;
     line-height: 30px;
     margin-left: 14px;
-
-    text {
-      display: flex;
-      flex-direction: column;
-    }
+  }
+  text {
+    display: flex;
+    flex-direction: column;
   }
 `;

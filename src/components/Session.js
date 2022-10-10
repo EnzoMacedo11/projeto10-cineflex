@@ -8,14 +8,14 @@ export default function Session() {
   const { sessionId } = useParams();
   const [session, setSession] = useState([]);
   const [image, setImage]=useState({})
-  console.log(sessionId);
+  //console.log(sessionId);
 
   useEffect(() => {
     const url = `https://mock-api.driven.com.br/api/v5/cineflex/movies/${sessionId}/showtimes`;
     const promisse = axios.get(url);
     promisse.then((res) => {
-      console.log("image", res.data);
-      console.log("date", res.data.days);
+     // console.log("image", res.data);
+      //console.log("date", res.data.days);
       setSession(res.data.days);
       setImage(res.data)
     });

@@ -2,12 +2,12 @@ import styled from "styled-components";
 import { Link } from "react-router-dom";
 
 export default function Times(props) {
-  console.log(props);
+  //console.log(props);
   const room = props.ses;
   const roomtime = room.showtimes;
   const weekday = props.ses.weekday;
   const date = props.ses.date;
-  console.log("roomtime", roomtime);
+  //console.log("roomtime", roomtime);
   return (
     <Card>
       <h1>

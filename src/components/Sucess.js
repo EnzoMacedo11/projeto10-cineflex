@@ -3,17 +3,18 @@ import styled from "styled-components";
 import axios from "axios";
 import { useParams } from "react-router-dom";
 import Confirmation from "./Confirmation";
+import { useLocation } from "react-router-dom";
 
 
 export default function Sucess() {
     const [date,setDate] =useState([])
-    const { sucessId } = useParams();
-    console.log("sucessId", sucessId);
-    console.log("date", date)
-    //console.log("seat",seat)
+    const { roomId } = useParams();
+   // console.log("date", date)
+    const location = useLocation()
+  //console.log("location",location)
   
     useEffect(() => {
-      const url = `https://mock-api.driven.com.br/api/v5/cineflex/showtimes/${sucessId}/seats`;
+      const url = `https://mock-api.driven.com.br/api/v5/cineflex/showtimes/${roomId}/seats`;
       const promisse = axios.get(url);
       promisse.then((res) => {
         console.log("teste",res.data);
@@ -25,15 +26,15 @@ export default function Sucess() {
       });
     }, []);
   
-    // if (place.length === 0) {
-    //   return <Loading>Carregando...</Loading>;
-    // }
+     if (date.length === 0) {
+       return <Loading>Carregando...</Loading>;
+     }
   return (
     <Container>
       <Title>
         <h1>Pedido feito com sucesso! </h1>
       </Title>
-      <Confirmation date={date}/>
+      <Confirmation date={date} location={location}/>
     
     </Container>
   );

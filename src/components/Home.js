@@ -2,7 +2,7 @@ import { useEffect, useState } from "react";
 import styled from "styled-components";
 import Movies from "./Movies";
 import axios from "axios";
-import { Link } from "react-router-dom";
+
 
 export default function Home() {
   const [image,setImage] =useState([])
@@ -12,7 +12,7 @@ export default function Home() {
     const url = "https://mock-api.driven.com.br/api/v5/cineflex/movies"
     const promisse = axios.get(url)
     promisse.then((res)=>{
-        console.log(res.data)
+ //       console.log(res.data)
         setImage(res.data)
     })
     promisse.catch((erro)=>{

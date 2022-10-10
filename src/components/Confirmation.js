@@ -7,27 +7,33 @@ export default function Confirmation(props){
     const movie = data.movie
     console.log("testando o movie", movie)
     const day = data.day
-    
+    const {location} = props
+    const { state } = location;
+    const {seatId, name, cpf,seatName } = state;
+    console.log(location)
    
     
     return(
         <>
         <Container>
-            {/* <div>
+            <div>
                 <h1>{"Filme e sessão"}</h1>
                 <h2>{movie.title}</h2>
-                <h2>{day.date}  {data.name}</h2>
+                <h2>{day.date}  {data.name}</h2> 
             </div>
             <div>
                 <h1>{"Ingressos"}</h1>
-                <h2>{"Assento 11"}</h2>
-                <h2>{"Assento 12"}</h2>
+                {seatName.map((id) => {
+            return (
+              <h2 key={id}>Assento {id}</h2>
+            );
+          })}
             </div>
             <div>
                 <h1>{"Comprador"}</h1>
-                <h2>{"Nome:"} {"Nome do comprador"}</h2>
-                <h2>{"CPF:"}  {"CPF do comprador"}</h2>
-            </div> */}
+                <h2>{"Nome:"} {name}</h2>
+                <h2>{"CPF:"}  {cpf}</h2>
+            </div>
         </Container>
          <Link to={"/"}><Finish><button>Voltar pra Home</button></Finish></Link>
         </>
